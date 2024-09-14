@@ -1,0 +1,275 @@
+#%Validation Profile 1.0
+profile: Anypoint Best Practices
+description: This ruleset contains best practices for APIs to be used,
+  maintained, and consumed across Anypoint Platform.
+tags:
+  - best-practices
+violation:
+  - api-must-have-title
+  - base-url-pattern-server
+  - provide-examples
+  - resource-use-lowercase
+  - api-title-constraints
+  - api-baseuri-constraints
+  - api-version-constraints
+  
+warning:
+  - camel-case-fields
+  - standard-delete-status-codes
+  - standard-get-status-codes
+  - standard-post-status-codes
+  - standard-put-status-codes
+  - query-params-must-have-descriptions
+  - operations-must-have-descriptions
+  - responses-must-have-descriptions   
+info:
+  - api-must-have-description
+  - api-must-have-documentation
+validations:        
+  api-must-have-description:
+    message: Provide the description for the API.
+    targetClass: apiContract.WebAPI
+    propertyConstraints:
+      core.description:
+        minCount: 1
+  api-must-have-documentation:
+    message: Provide the documentation for the API.
+    targetClass: apiContract.WebAPI
+    propertyConstraints:
+      core.documentation:
+        minCount: 1
+  api-must-have-title:
+    message: Provide the title for the API.
+    targetClass: apiContract.WebAPI
+    propertyConstraints:
+      core.name:
+        minCount: 1
+  base-url-pattern-server:
+    message: Include “api” and the version of the API in the base URL. For example,
+      `domain/api/v1`.
+    targetClass: apiContract.Server
+    or:
+      - propertyConstraints:
+          core.urlTemplate:
+            pattern: /api/v[0-9]+
+      - propertyConstraints:
+          core.urlTemplate:
+            pattern: /api/[0-9].[0.9]
+  camel-case-fields:
+    message: Use camelCase for all of the field names. Avoid underscores.
+    targetClass: shacl.PropertyShape
+    propertyConstraints:
+      shacl.name:
+        pattern: ^[a-z]+[1-9]?([A-Z][a-z1-9]+)*$
+  operations-must-have-descriptions:
+    message: Provide descriptions for the operations.
+    targetClass: apiContract.Operation
+    propertyConstraints:
+      core.description:
+        minCount: 1
+  query-params-must-have-descriptions:
+    message: Provide descriptions for query params.
+    targetClass: apiContract.Parameter
+    if:
+      propertyConstraints:
+        apiContract.binding:
+          pattern: query
+    then:
+      propertyConstraints:
+        core.description:
+          minCount: 1
+  resource-use-lowercase:
+    message: |
+      Naming conventions for resources:
+      - Use lowercase (example: /accounts)
+      - For resources with more than 2 words
+          - use lowercase for both words (example: /lineitems) or
+          - use kebab-case (aka spinal-case) (example: /line-items)
+    targetClass: apiContract.EndPoint
+    propertyConstraints:
+      apiContract.path:
+        pattern: ^[a-z1-9\/\{\}-]+$
+  responses-must-have-descriptions:
+    message: Provide descriptions for the responses.
+    targetClass: apiContract.Response
+    propertyConstraints:
+      core.description:
+        minCount: 1
+  standard-delete-status-codes:
+    message: >
+      The following response codes should be used as standard for DELETE
+      operations: 200,202,204,400,401,403,404,405,
+
+      406,408,409,410,429,500,502,503,504,509,510,511,550,598,599]. Avoid not defined return codes.
+    targetClass: apiContract.Operation
+    if:
+      propertyConstraints:
+        apiContract.method:
+          pattern: delete
+    then:
+      propertyConstraints:
+        apiContract.returns / apiContract.statusCode:
+          in:
+            - "200"
+            - "202"
+            - "204"
+            - "400"
+            - "401"
+            - "403"
+            - "404"
+            - "405"
+            - "406"
+            - "408"
+            - "409"
+            - "410"
+            - "429"
+            - "500"
+            - "502"
+            - "503"
+            - "504"
+            - "509"
+            - "510"
+            - "511"
+            - "550"
+            - "598"
+            - "599"
+  standard-get-status-codes:
+    message: >
+      The following response codes should be used as standard for GET
+      operations:
+      200,204,304,400,401,403,404,405,406,408,410,412,415,429,500,502,503,504,509,510,511,550,598,
+
+      599. Avoid not defined return codes.
+    targetClass: apiContract.Operation
+    if:
+      propertyConstraints:
+        apiContract.method:
+          pattern: get
+    then:
+      propertyConstraints:
+        apiContract.returns / apiContract.statusCode:
+          in:
+            - "200"
+            - "204"
+            - "304"
+            - "400"
+            - "401"
+            - "403"
+            - "404"
+            - "405"
+            - "406"
+            - "408"
+            - "410"
+            - "412"
+            - "415"
+            - "429"
+            - "500"
+            - "502"
+            - "503"
+            - "504"
+            - "509"
+            - "510"
+            - "511"
+            - "550"
+            - "598"
+            - "599"
+  standard-post-status-codes:
+    message: >
+      The following response codes should be used as standard for POST
+      operations:
+
+      201,202,400,401,403,404,405,406,408,409,410,415,429,500,502,503,504,509,510,511,550,598,599.
+
+      Avoid not defined return codes.
+    targetClass: apiContract.Operation
+    if:
+      propertyConstraints:
+        apiContract.method:
+          pattern: post
+    then:
+      propertyConstraints:
+        apiContract.returns / apiContract.statusCode:
+          in:
+            - "201"
+            - "202"
+            - "400"
+            - "401"
+            - "403"
+            - "404"
+            - "405"
+            - "406"
+            - "408"
+            - "409"
+            - "410"
+            - "415"
+            - "429"
+            - "500"
+            - "502"
+            - "503"
+            - "504"
+            - "509"
+            - "510"
+            - "511"
+            - "550"
+            - "598"
+            - "599"
+  standard-put-status-codes:
+    message: >
+      The following response codes should be used as standard for PUT
+      operations:
+
+      200,202,204,400,401,403,404,405,406,408,409,410,412,415,429,500,502,503,504,509,510,511,550,
+
+      598,599. Avoid not defined return codes.
+    targetClass: apiContract.Operation
+    if:
+      propertyConstraints:
+        apiContract.method:
+          pattern: put
+    then:
+      propertyConstraints:
+        apiContract.returns / apiContract.statusCode:
+          in:
+            - "200"
+            - "202"
+            - "204"
+            - "400"
+            - "401"
+            - "403"
+            - "404"
+            - "405"
+            - "406"
+            - "408"
+            - "409"
+            - "410"
+            - "412"
+            - "415"
+            - "429"
+            - "500"
+            - "502"
+            - "503"
+            - "504"
+            - "509"
+            - "510"
+            - "511"         
+            - "550"
+            - "598"
+            - "599"
+  api-baseuri-constraints:
+   message: API should allow http or https
+   targetClass: apiContract.Server
+   propertyConstraints:
+        core.urlTemplate:
+          pattern: '^https://|^http://'
+  api-title-constraints:
+    message: API should have api name format say -sys-api or -prc-api or exp-api
+    targetClass: apiContract.WebAPI
+    propertyConstraints:
+        core.name:
+          pattern: 'exp-api$|prc-api$|sys-api$'
+  api-version-constraints:
+    message: API version should be like v* say v1 or v2 and so on
+    targetClass: apiContract.WebAPI
+    propertyConstraints:
+      core.version:
+        pattern: v[1-9]$
